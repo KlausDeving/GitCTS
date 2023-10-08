@@ -1,0 +1,27 @@
+﻿<Window x:Class="CTS.Kanban.CreateTaskModalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CTS.Kanban"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Title="Create a new Task" Height="280" Width="300">
+    <StackPanel x:Name="root" Margin="15">
+
+        <TextBlock Margin="0,0,0,5" Text="Enter a title"/>
+        <TextBox Margin="0,0,0,10" x:Name="TitleBox"/>
+        <TextBlock Margin="0,0,0,5" Text="Enter a description"/>
+        <TextBox Margin="0,0,0,10" x:Name="DescriptionBox" Height="60" />
+        <TextBlock Margin="0,0,0,5"  Text="Select a status type"/>
+        <ComboBox Margin="0,0,0,10" x:Name="StatusBox" Width="100" HorizontalAlignment="Left"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+            <Button Content="Create" Margin="0,0,10,0" Click="Button_Click"/>
+            <Button Content="Cancel" IsCancel="True" Click="Button_Click_1"/>
+
+        </StackPanel>
+    </StackPanel>
+</Window>

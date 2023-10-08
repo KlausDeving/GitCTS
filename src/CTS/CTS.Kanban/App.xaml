@@ -1,0 +1,184 @@
+﻿<Application x:Class="CTS.Kanban.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CTS.Kanban"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+
+
+        <Style TargetType="{x:Type local:EditableTextBlock}">
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="{x:Type local:EditableTextBlock}">
+
+                        <Grid x:Name="PART_GridContainer"
+
+                      Background="{TemplateBinding Background}"
+
+                      Width="{TemplateBinding Width}"
+
+                      Height="{TemplateBinding Height}">
+
+                            <TextBlock x:Name="PART_TbDisplayText"
+
+                               Visibility="Visible"
+
+                               Background="{Binding Mode=TwoWay, Path=TextBlockBackgroundColor, RelativeSource={RelativeSource AncestorType={x:Type local:EditableTextBlock}}}"
+
+                               Foreground="{Binding Mode=TwoWay, Path=TextBlockForegroundColor, RelativeSource={RelativeSource AncestorType={x:Type local:EditableTextBlock}}}"
+
+                               Text="{Binding Mode=TwoWay, Path=Text, RelativeSource={RelativeSource AncestorType={x:Type local:EditableTextBlock}}}" />
+
+                            <TextBox x:Name="PART_TbEditText"
+
+                             Visibility="Hidden"
+
+                             Background="{Binding Mode=TwoWay, Path=TextBoxBackgroundColor, RelativeSource={RelativeSource AncestorType={x:Type local:EditableTextBlock}}}"
+
+                             Foreground="{Binding Mode=TwoWay, Path=TextBoxForegroundColor, RelativeSource={RelativeSource AncestorType={x:Type local:EditableTextBlock}}}"
+
+                             Text="{Binding Mode=TwoWay, Path=Text, RelativeSource={RelativeSource AncestorType={x:Type local:EditableTextBlock}}}" />
+
+                        </Grid>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <local:EnumToStringFormatConverter x:Key="EnumToString"/>
+        <Style TargetType="{x:Type ListView}">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+
+        </Style>
+        <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <ContentPresenter />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate DataType="{x:Type local:KanbanCardViewModel}">
+            <Border  Cursor="Hand" CornerRadius="10" Width="200" Height="150" Margin="0,0,0,20" Background="#E6DCA7" >
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0"  Background="#E6AAA7" CornerRadius="10,10,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock HorizontalAlignment="Left" FontFamily="SegoeUI" FontSize="25" Margin="10,0,0,0" Text="{Binding Title}"/>
+                            <TextBlock HorizontalAlignment="Right" FontFamily="SegoeUI" FontSize="15" Margin="10,0,0,0" Text="{Binding StatusType, Converter={StaticResource EnumToString}}"/>
+                            <Button HorizontalAlignment="Right" Content="E" Command="{Binding EditCommand}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Row="1" Background="#E6DCA7" CornerRadius="0,0,10,10">
+                        <TextBlock FontFamily="SegoeUI" FontSize="15" Margin="10,0,0,0" Text="{Binding Description}"/>
+                    </Border>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type local:KanbanColumnViewModel}" >
+
+            <StackPanel Margin="0,0,25,0" VerticalAlignment="Stretch" >
+                <local:EditableTextBlock  HorizontalAlignment="Center" FontSize="20" Cursor="Hand" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="Create Task" Command="{Binding CreateTaskCommand}"/>
+                <ListView 
+                    BorderBrush="#777" 
+                    BorderThickness="0.4"
+                    SelectedItem="{Binding SelectedCard, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    Height="600" 
+                    ScrollViewer.CanContentScroll="True"
+                    ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                    MinWidth="200" 
+                    dd:DragDrop.IsDragSource="True" 
+                    dd:DragDrop.IsDropTarget="True"  
+                    dd:DragDrop.DropHandler="{Binding}"
+                    ItemsSource="{Binding Items}" 
+                    HorizontalContentAlignment="Center">
+                </ListView>
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem 
+                            Header="Remove" 
+                            Command="{Binding RemoveTaskCommand}"/>
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+            </StackPanel>
+
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:KanbanBoardViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="500"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="800"/>
+                </Grid.RowDefinitions>
+
+                <ListView
+                Width="600"
+                dd:DragDrop.IsDragSource="True" 
+                dd:DragDrop.IsDropTarget="True" 
+                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                ItemsSource="{Binding KanbanColumnViewModels}" 
+                HorizontalContentAlignment="Center">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+
+                </ListView>
+                <Grid Grid.Column="1" Background="Transparent" Margin="0,25,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <!-- Style for the Button -->
+                        <Style x:Key="ButtonVisibilityStyle" TargetType="{x:Type Button}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=IsMouseOver}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Resources>
+
+                    <TextBox 
+                        x:Name="inputBox" 
+                        Visibility="{Binding InputVisibility, UpdateSourceTrigger=LostFocus}" 
+                        Text="{Binding Input}"
+                        AcceptsReturn="True"
+                        Grid.Row="0">
+                    </TextBox>
+
+                    <Button
+                        Grid.Row="1"
+                        Height="20"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource ButtonVisibilityStyle}" 
+                        x:Name="button" 
+                        Content="Add Column" 
+                        Command="{Binding AddColumnCommand}"/>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+    </Application.Resources>
+</Application>

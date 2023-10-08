@@ -1,0 +1,29 @@
+﻿<Window x:Class="CTS.Kanban.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CTS.Kanban" 
+        d:DataContext="{d:DesignInstance Type=local:MainViewViewModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="650" Width="800">
+    <Grid  >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ContentControl HorizontalAlignment="Center" Grid.Row="1">
+            <ContentPresenter>
+                <ContentPresenter.Content>
+                    <Binding Path="KanbanBoardViewModel"/>
+                </ContentPresenter.Content>
+            </ContentPresenter>
+            <ContentControl.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Remove" Command="{Binding RemoveTaskCommand}"/>
+                </ContextMenu>
+            </ContentControl.ContextMenu>
+        </ContentControl>
+
+    </Grid>
+</Window>
