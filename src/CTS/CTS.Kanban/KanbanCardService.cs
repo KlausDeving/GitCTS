@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CTS.Kanban;
-public class KanbanCardService : IKanbanCardService
+public class KanbanCardService : IKanbanObjectService<KanbanCard>
 {
     private readonly AppDbContext _appDbContext;
 

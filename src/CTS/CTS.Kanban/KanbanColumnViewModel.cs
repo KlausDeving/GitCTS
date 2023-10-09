@@ -15,18 +15,40 @@ using GongSolutions.Wpf.DragDrop;
 namespace CTS.Kanban;
 public partial class KanbanColumnViewModel : ObservableObject, IDropTarget
 {
-    public KanbanColumnViewModel(string statusType, IEnumerable<KanbanCardViewModel> items, IKanbanCardService kanbanCardService)
+    public KanbanColumnViewModel(KanbanColumn kanbanColumn, string statusType, IEnumerable<KanbanCardViewModel> items, IKanbanObjectService<KanbanCard> kanbanCardService)
     {
+        _kanbanColumn=kanbanColumn;
         Title=statusType;
         _kanbanCardService=kanbanCardService;
         Items=new ObservableCollection<KanbanCardViewModel>(items);
+
     }
+
+    public int Id
+    {
+        get => _kanbanColumn.Id;
+    }
+
 
     [ObservableProperty]
     private ObservableCollection<KanbanCardViewModel> _items = new();
 
-    [ObservableProperty]
     private string _title = string.Empty;
+
+    public string Title
+    {
+        get => _title;
+        set
+        {
+            _title=value;
+            OnPropertyChanged();
+            foreach(var item in Items)
+            {
+                item.StatusType=Title;
+            }
+        }
+    }
+
 
     [ObservableProperty]
     private KanbanCardViewModel? _selectedCard;
@@ -87,5 +109,6 @@ public partial class KanbanColumnViewModel : ObservableObject, IDropTarget
         }
     }
 
-    private readonly IKanbanCardService _kanbanCardService;
+    private readonly KanbanColumn _kanbanColumn;
+    private readonly IKanbanObjectService<KanbanCard> _kanbanCardService;
 }

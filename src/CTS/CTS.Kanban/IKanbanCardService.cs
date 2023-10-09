@@ -3,12 +3,20 @@ using System.Threading.Tasks;
 
 namespace CTS.Kanban;
 
-public interface IKanbanCardService
+
+
+public interface IKanbanDomainModel
 {
-    KanbanCard Create(KanbanCard kanbanCard);
-    Task<KanbanCard> CreateAsync(KanbanCard kanbanCard);
+    int Id { get; set; }
+}
+
+
+public interface IKanbanObjectService<T> where T : IKanbanDomainModel
+{
+    T Create(T kanbanCard);
+    Task<T> CreateAsync(T kanbanCard);
     Task DeleteAsync(int id);
-    Task<KanbanCard> GetAsync(int id);
-    Task<IEnumerable<KanbanCard>> GetAsync();
-    Task<KanbanCard> UpsertAsync(KanbanCard kanbanCard);
+    Task<T> GetAsync(int id);
+    Task<IEnumerable<T>> GetAsync();
+    Task<T> UpsertAsync(T kanbanCard);
 }

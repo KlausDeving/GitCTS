@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace CTS.Kanban;
 /// <summary>
@@ -39,5 +36,10 @@ public partial class CreateTaskModalWindow : Window
     private void Button_Click_1(object sender, RoutedEventArgs e)
     {
         this.DialogResult=false;
+    }
+
+    private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        (sender as Window).DragMove();
     }
 }

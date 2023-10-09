@@ -7,7 +7,12 @@
         mc:Ignorable="d"
         WindowStyle="None"
         ResizeMode="NoResize"
-        Title="Create a new Task" Height="280" Width="300">
+        Title="Create a new Task"
+        Height="280" 
+        Width="300"
+        MouseDown="Window_MouseDown"
+        >
+
     <StackPanel x:Name="root" Margin="15">
 
         <TextBlock Margin="0,0,0,5" Text="Enter a title"/>

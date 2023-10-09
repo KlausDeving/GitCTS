@@ -5,8 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CTS.Kanban"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type={x:Type local:EditableTextBlock}}">
+    <Grid x:Name="PART_GridContainer">
+        <TextBlock x:Name="PART_TbDisplayText"
+           Visibility="Visible"
+           Background="{Binding TextBlockBackgroundColor}"
+           Foreground="{Binding TextBlockForegroundColor}"
+           Text="{Binding Text,UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox x:Name="PART_TbEditText"
+         Visibility="Hidden"
+                 LostFocus="OnTextBoxLostFocus"
+         Background="{Binding TextBoxBackgroundColor}"
+         Foreground="{Binding TextBoxForegroundColor}"
+         Text="{Binding Text ,UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </UserControl>

@@ -10,11 +10,11 @@ using CommunityToolkit.Mvvm.Input;
 namespace CTS.Kanban;
 public partial class MainViewViewModel : ObservableObject
 {
-    private readonly IKanbanCardService _kanbanCardService;
+    private readonly IKanbanObjectService<KanbanCard> _kanbanCardService;
     [ObservableProperty]
     private KanbanBoardViewModel _kanbanBoardViewModel;
 
-    public MainViewViewModel(IKanbanCardService kanbanCardService)
+    public MainViewViewModel(IKanbanObjectService<KanbanCard> kanbanCardService)
     {
         _kanbanCardService=kanbanCardService;
         KanbanBoardViewModel=new KanbanBoardViewModel(kanbanCardService);

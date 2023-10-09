@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace CTS.Kanban;
 public partial class KanbanCardViewModel : ObservableObject
 {
-    public KanbanCardViewModel(KanbanCard kanbanCard, IKanbanCardService kanbanService)
+    public KanbanCardViewModel(KanbanCard kanbanCard, IKanbanObjectService<KanbanCard> kanbanService)
     {
         _kanbanCard=kanbanCard;
         _kanbanService=kanbanService;
@@ -15,7 +15,15 @@ public partial class KanbanCardViewModel : ObservableObject
     }
 
     public int Id { get => _kanbanCard.Id; }
-    public string StatusType { get => _kanbanCard.StatusType; }
+    public string StatusType
+    {
+        get => _kanbanCard.StatusType; set
+        {
+            _kanbanCard.StatusType=value;
+            OnPropertyChanged();
+            _kanbanService.UpsertAsync(_kanbanCard);
+        }
+    }
 
     [ObservableProperty]
     private string _title = string.Empty;
@@ -23,7 +31,7 @@ public partial class KanbanCardViewModel : ObservableObject
     [ObservableProperty]
     private string _description = string.Empty;
     private readonly KanbanCard _kanbanCard;
-    private readonly IKanbanCardService _kanbanService;
+    private readonly IKanbanObjectService<KanbanCard> _kanbanService;
 
     [RelayCommand]
     private void Edit()
