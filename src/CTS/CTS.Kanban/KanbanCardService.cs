@@ -1,71 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace CTS.Kanban;
-public class KanbanCardService : IKanbanObjectService<KanbanCard>
+public class KanbanService<T> : IKanbanObjectService<T> where T : class, IKanbanDomainModel, new()
 {
     private readonly AppDbContext _appDbContext;
-
-    public KanbanCardService(AppDbContext appDbContext)
+    private readonly DbSet<T> _dbSet;
+    public KanbanService(AppDbContext appDbContext)
     {
         _appDbContext=appDbContext;
+        _dbSet=appDbContext.Set<T>();
     }
-    public KanbanCard Create(KanbanCard kanbanCard)
+    public T Create(T kanban)
     {
-        _appDbContext.KanbanCards.Add(kanbanCard);
+        _dbSet.Add(kanban);
         _appDbContext.SaveChanges();
-        return kanbanCard;
+        return kanban;
     }
 
-    public async Task<KanbanCard> CreateAsync(KanbanCard kanbanCard)
+    public async Task<T> CreateAsync(T kanban)
     {
-        _appDbContext.KanbanCards.Add(kanbanCard);
+        _dbSet.Add(kanban);
         await _appDbContext.SaveChangesAsync();
-        return kanbanCard;
+        return kanban;
     }
 
     public async Task DeleteAsync(int id)
     {
-        var kanbanCard = await _appDbContext.KanbanCards.FindAsync(id)??throw new KanbanCardNotFoundException($"Card with Id: {id} not found");
-        _appDbContext.KanbanCards.Remove(kanbanCard);
+        var kanban = await _dbSet.FindAsync(id)??throw new KanbanCardNotFoundException($"The object with id: {id} was not found");
+        _dbSet.Remove(kanban);
         await _appDbContext.SaveChangesAsync();
     }
 
-    public async Task<KanbanCard> GetAsync(int id)
+    public async Task<T> GetAsync(int id)
     {
-        var kanbanCard = await _appDbContext.KanbanCards.FindAsync(id);
-        return kanbanCard is null ? throw new KanbanCardNotFoundException($"Card with Id: {id} not found") : kanbanCard;
+        var kanban = await _dbSet.FindAsync(id);
+        return kanban is null ? throw new KanbanCardNotFoundException($"The object with id: {id} was not found") : kanban;
     }
 
-    public async Task<IEnumerable<KanbanCard>> GetAsync()
+    public async Task<IEnumerable<T>> GetAsync()
     {
-        return await Task.FromResult(_appDbContext.KanbanCards.AsEnumerable());
+        return await Task.FromResult(_dbSet.AsEnumerable());
     }
 
-    public async Task<KanbanCard> UpsertAsync(KanbanCard kanbanCard)
+    public async Task<T> UpsertAsync(T kanban)
     {
 
-        var kanbanCardToUpdate = await _appDbContext.KanbanCards.FindAsync(kanbanCard.Id);
-        if(kanbanCardToUpdate is null)
+        var kanbanToUpdate = await _dbSet.FindAsync(kanban.Id);
+        if(kanbanToUpdate is null)
         {
-            kanbanCardToUpdate=new KanbanCard()
-            {
-                Title=kanbanCard.Title,
-                Description=kanbanCard.Description,
-                StatusType=kanbanCard.StatusType
-            };
-            _appDbContext.KanbanCards.Add(kanbanCardToUpdate);
+            kanbanToUpdate=new T();
+            _dbSet.Add(kanbanToUpdate);
             await _appDbContext.SaveChangesAsync();
-            return kanbanCardToUpdate;
+            return kanbanToUpdate;
         }
-        kanbanCardToUpdate.Title=kanbanCard.Title;
-        kanbanCardToUpdate.Description=kanbanCard.Description;
-        kanbanCardToUpdate.StatusType=kanbanCard.StatusType;
         await _appDbContext.SaveChangesAsync();
-        return kanbanCardToUpdate;
+        return kanbanToUpdate;
     }
 
+}
+
+public static class ServiceLocator
+{
+    private static readonly Dictionary<Type, object> _services = new();
+
+    public static void Register<T>(T service)
+    {
+        _services[typeof(T)]=service;
+    }
+
+    public static T GetService<T>()
+    {
+        return (T)_services[typeof(T)];
+    }
 }

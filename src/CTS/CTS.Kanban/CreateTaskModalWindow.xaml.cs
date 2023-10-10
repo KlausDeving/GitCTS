@@ -28,7 +28,11 @@ public partial class CreateTaskModalWindow : Window
         {
             Title=this.TitleBox.Text,
             Description=this.DescriptionBox.Text,
-            StatusType=(StatusBox.SelectedItem??string.Empty)?.ToString()
+            StatusType=(StatusBox.SelectedItem??string.Empty)?.ToString(),
+            KanbanColumn=new KanbanColumn()
+            {
+                StatusType=(StatusBox.SelectedItem??string.Empty)?.ToString()
+            }
         };
         this.DialogResult=true;
         Close();

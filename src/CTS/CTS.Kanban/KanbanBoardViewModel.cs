@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,10 +7,10 @@ using CommunityToolkit.Mvvm.Input;
 namespace CTS.Kanban;
 public partial class KanbanBoardViewModel : ObservableObject
 {
-    public KanbanBoardViewModel(IKanbanObjectService<KanbanCard> kanbanCardService, IKanbanObjectService<KanbanColumn> kanbanColumnService)
+    public KanbanBoardViewModel()
     {
-        _kanbanCardService=kanbanCardService;
-        _kanbanColumnService=kanbanColumnService;
+        _kanbanCardService=ServiceLocator.GetService<IKanbanObjectService<KanbanCard>>();
+        _kanbanColumnService=ServiceLocator.GetService<IKanbanObjectService<KanbanColumn>>();
         _kanbanColumnViewModels.CollectionChanged+=KanbanColumnViewModels_CollectionChanged;
     }
 
@@ -56,7 +51,7 @@ public partial class KanbanBoardViewModel : ObservableObject
             {
                 StatusType=value
             };
-            KanbanColumnViewModels.Add(new KanbanColumnViewModel(kanbanColumn, Input, new List<KanbanCardViewModel>(), _kanbanCardService));
+            KanbanColumnViewModels.Add(new KanbanColumnViewModel(kanbanColumn));
             InputVisibility=Visibility.Hidden;
         }
     }

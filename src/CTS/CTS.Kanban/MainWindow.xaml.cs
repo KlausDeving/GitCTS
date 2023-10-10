@@ -22,9 +22,11 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         AppDbContext appDbContext = new AppDbContext();
-        KanbanCardService kanbanCardService = new KanbanCardService(appDbContext);
-
-        DataContext=new MainViewViewModel(kanbanCardService);
+        var kanbanCardService = new KanbanService<KanbanCard>(appDbContext);
+        var kanbanColumnService = new KanbanService<KanbanColumn>(appDbContext);
+        ServiceLocator.Register<IKanbanObjectService<KanbanCard>>(kanbanCardService);
+        ServiceLocator.Register<IKanbanObjectService<KanbanColumn>>(kanbanColumnService);
+        DataContext=new MainViewViewModel();
         InitializeComponent();
     }
 }

@@ -11,37 +11,24 @@ namespace CTS.Kanban;
 public partial class MainViewViewModel : ObservableObject
 {
     private readonly IKanbanObjectService<KanbanCard> _kanbanCardService;
+    private readonly IKanbanObjectService<KanbanColumn> _kanbanColumnService;
     [ObservableProperty]
     private KanbanBoardViewModel _kanbanBoardViewModel;
 
-    public MainViewViewModel(IKanbanObjectService<KanbanCard> kanbanCardService)
-    {
-        _kanbanCardService=kanbanCardService;
-        KanbanBoardViewModel=new KanbanBoardViewModel(kanbanCardService);
-        RetrieveKanban();
-    }
     public MainViewViewModel()
     {
-
-        _kanbanCardService=new KanbanCardService(new AppDbContext());
-        KanbanBoardViewModel=new KanbanBoardViewModel(_kanbanCardService);
+        _kanbanCardService=ServiceLocator.GetService<IKanbanObjectService<KanbanCard>>();
+        _kanbanColumnService=ServiceLocator.GetService<IKanbanObjectService<KanbanColumn>>();
+        KanbanBoardViewModel=new KanbanBoardViewModel();
         RetrieveKanban();
     }
+
 
     private async Task RetrieveKanban()
     {
         var cards = await _kanbanCardService.GetAsync();
-        KanbanBoardViewModel.KanbanColumnViewModels=new ObservableCollection<KanbanColumnViewModel>();
-        var cardViewModels = new List<KanbanCardViewModel>();
-        foreach(var card in cards)
-        {
-            cardViewModels.Add(new KanbanCardViewModel(card, _kanbanCardService));
-        }
-        var types = cards.Select(x => x.StatusType).Distinct();
-        foreach(var type in types)
-        {
-            KanbanBoardViewModel.KanbanColumnViewModels.Add(new KanbanColumnViewModel(type, cardViewModels.Where(x => x.StatusType==type), _kanbanCardService));
-        }
+        var columns = await _kanbanColumnService.GetAsync();
+        KanbanBoardViewModel.KanbanColumnViewModels=new ObservableCollection<KanbanColumnViewModel>(columns.Select(x => new KanbanColumnViewModel(x)));
     }
 }
 

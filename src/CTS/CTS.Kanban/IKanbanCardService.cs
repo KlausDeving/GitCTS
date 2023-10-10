@@ -3,13 +3,10 @@ using System.Threading.Tasks;
 
 namespace CTS.Kanban;
 
-
-
 public interface IKanbanDomainModel
 {
     int Id { get; set; }
 }
-
 
 public interface IKanbanObjectService<T> where T : IKanbanDomainModel
 {

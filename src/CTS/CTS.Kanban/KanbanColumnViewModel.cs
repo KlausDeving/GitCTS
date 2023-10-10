@@ -15,13 +15,13 @@ using GongSolutions.Wpf.DragDrop;
 namespace CTS.Kanban;
 public partial class KanbanColumnViewModel : ObservableObject, IDropTarget
 {
-    public KanbanColumnViewModel(KanbanColumn kanbanColumn, string statusType, IEnumerable<KanbanCardViewModel> items, IKanbanObjectService<KanbanCard> kanbanCardService)
+    public KanbanColumnViewModel(
+        KanbanColumn kanbanColumn)
     {
         _kanbanColumn=kanbanColumn;
-        Title=statusType;
-        _kanbanCardService=kanbanCardService;
-        Items=new ObservableCollection<KanbanCardViewModel>(items);
-
+        _kanbanCardService=ServiceLocator.GetService<IKanbanObjectService<KanbanCard>>();
+        Title=_kanbanColumn.StatusType;
+        Items=new ObservableCollection<KanbanCardViewModel>(kanbanColumn.KanbanCards.Select(x => new KanbanCardViewModel(x)));
     }
 
     public int Id
@@ -74,7 +74,7 @@ public partial class KanbanColumnViewModel : ObservableObject, IDropTarget
         CreateTaskModalWindow createTaskModalWindow = new CreateTaskModalWindow(statuses);
         if(createTaskModalWindow.ShowDialog()==true)
         {
-            Items.Add(new KanbanCardViewModel(_kanbanCardService.Create(createTaskModalWindow.Result), _kanbanCardService));
+            Items.Add(new KanbanCardViewModel(_kanbanCardService.Create(createTaskModalWindow.Result)));
         }
 
     }
@@ -105,7 +105,7 @@ public partial class KanbanColumnViewModel : ObservableObject, IDropTarget
 
 
             // Add the item to the target collection
-            Items.Add(new KanbanCardViewModel(await _kanbanCardService.UpsertAsync(kanbanItem), _kanbanCardService));
+            Items.Add(new KanbanCardViewModel(await _kanbanCardService.UpsertAsync(kanbanItem)));
         }
     }
 
