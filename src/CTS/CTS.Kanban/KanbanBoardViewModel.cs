@@ -20,7 +20,7 @@ public partial class KanbanBoardViewModel : ObservableObject
         {
             case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                 {
-                    _kanbanColumnService.UpsertAsync(new KanbanColumn { StatusType=e.NewItems[0] as string });
+                    _kanbanColumnService.UpsertAsync(new KanbanColumn { Title=e.NewItems[0] as string });
                 }
                 break;
             case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
@@ -37,7 +37,6 @@ public partial class KanbanBoardViewModel : ObservableObject
     [ObservableProperty]
     private Visibility _inputVisibility = Visibility.Hidden;
 
-
     private string _input = string.Empty;
 
     public string Input
@@ -49,14 +48,12 @@ public partial class KanbanBoardViewModel : ObservableObject
             OnPropertyChanged();
             KanbanColumn kanbanColumn = new KanbanColumn()
             {
-                StatusType=value
+                Title=value
             };
             KanbanColumnViewModels.Add(new KanbanColumnViewModel(kanbanColumn));
             InputVisibility=Visibility.Hidden;
         }
     }
-
-
 
     private readonly IKanbanObjectService<KanbanCard> _kanbanCardService;
     private readonly IKanbanObjectService<KanbanColumn> _kanbanColumnService;

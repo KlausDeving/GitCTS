@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CTS.Kanban" 
         d:DataContext="{d:DesignInstance Type=local:MainViewViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        Background="#FFF8E7"
         Title="MainWindow" Height="650" Width="800">
     <Grid  >
         <Grid.RowDefinitions>

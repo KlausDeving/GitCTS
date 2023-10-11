@@ -5,14 +5,9 @@
              xmlns:dd="urn:gong-wpf-dragdrop"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-
-
-
-
         <local:EnumToStringFormatConverter x:Key="EnumToString"/>
         <Style TargetType="{x:Type ListView}">
             <Setter Property="BorderBrush" Value="Transparent"/>
-
         </Style>
         <Style TargetType="{x:Type ListViewItem}">
             <Setter Property="Template">
@@ -25,30 +20,66 @@
         </Style>
 
         <DataTemplate DataType="{x:Type local:KanbanCardViewModel}">
-            <Border  Cursor="Hand" CornerRadius="10" Width="200" Height="150" Margin="0,0,0,20" Background="#E6DCA7" >
+            <Border   CornerRadius="10" Width="200" Height="150" Margin="0,0,0,20"  >
                 <Grid >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0"  Background="#E6AAA7" CornerRadius="10,10,0,0">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock HorizontalAlignment="Left" FontFamily="SegoeUI" FontSize="25" Margin="10,0,0,0" Text="{Binding Title}"/>
-                            <TextBlock HorizontalAlignment="Right" FontFamily="SegoeUI" FontSize="15" Margin="10,0,0,0" Text="{Binding StatusType, Converter={StaticResource EnumToString}}"/>
-                            <Button HorizontalAlignment="Right" Content="E" Command="{Binding EditCommand}"/>
+                    <Border Grid.Row="0"  Background="#fffef9" CornerRadius="10,10,0,0">
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <TextBlock HorizontalAlignment="Left" FontFamily="SegoeUI" FontSize="18" FontWeight="Bold" Margin="10,0,0,0" Text="{Binding Title}"/>
                         </StackPanel>
                     </Border>
-                    <Border Grid.Row="1" Background="#E6DCA7" CornerRadius="0,0,10,10">
-                        <TextBlock FontFamily="SegoeUI" FontSize="15" Margin="10,0,0,0" Text="{Binding Description}"/>
+                    <Border Grid.Row="1" Background="#fffef9" CornerRadius="0,0,10,10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock FontFamily="SegoeUI" FontSize="13.5" Margin="10,10,0,0" Text="{Binding StatusType, Converter={StaticResource EnumToString}}"/>
+                            <TextBlock Grid.Row="1"  FontFamily="SegoeUI" FontSize="13.5" Margin="10,10,0,0" Text="{Binding Description}"/>
+                            <Button Cursor="Hand" Width="20" FontWeight="Bold" Grid.Row="2" Content="..." HorizontalAlignment="Right" HorizontalContentAlignment="Center" Command="{Binding EditCommand}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border x:Name="BorderElement" BorderBrush="Transparent" BorderThickness="0">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger SourceName="BorderElement"  Property="IsMouseOver" Value="True">
+                                                            <Setter Property="FontWeight" Value="ExtraBold"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+
+                            </Button>
+
+                        </Grid>
                     </Border>
                 </Grid>
+                <Border.Effect>
+                    <DropShadowEffect
+                        ShadowDepth="6"
+                        Direction="315"
+                        Color="Maroon"
+                        Opacity="0.35"
+                        BlurRadius="0.0" />
+                </Border.Effect>
             </Border>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type local:KanbanColumnViewModel}" >
 
-            <StackPanel Margin="0,0,25,0" VerticalAlignment="Stretch" >
+            <StackPanel Background="Transparent" Margin="0,0,25,0" VerticalAlignment="Stretch" >
                 <local:EditableTextBlock
                     TextBlockForegroundColor="#444"
                     TextBoxForegroundColor="#444"
@@ -56,16 +87,17 @@
                     FontSize="20"
                     DataContext="{Binding}"
                     Cursor="Hand"
-                    Text="{Binding Title,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    Text="{Binding Title,Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                 <Button Content="Create Task" Command="{Binding CreateTaskCommand}"/>
                 <ListView 
-                    BorderBrush="#777" 
-                    BorderThickness="0.4"
+                    Background="Transparent"
+                    BorderBrush="Transparent" 
+                    BorderThickness="0"
                     SelectedItem="{Binding SelectedCard, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     Height="600" 
                     ScrollViewer.CanContentScroll="True"
                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                    MinWidth="200" 
+                    MinWidth="240" 
                     dd:DragDrop.IsDragSource="True" 
                     dd:DragDrop.IsDropTarget="True"  
                     dd:DragDrop.DropHandler="{Binding}"
@@ -83,7 +115,7 @@
 
         </DataTemplate>
         <DataTemplate DataType="{x:Type local:KanbanBoardViewModel}">
-            <Grid>
+            <Grid  Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="500"/>
                     <ColumnDefinition Width="200"/>
@@ -93,6 +125,7 @@
                 </Grid.RowDefinitions>
 
                 <ListView
+                    Background="Transparent"
                 Width="600"
                 dd:DragDrop.IsDragSource="True" 
                 dd:DragDrop.IsDropTarget="True" 

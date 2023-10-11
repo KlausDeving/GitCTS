@@ -16,7 +16,10 @@ namespace CTS.Kanban.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.12")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -36,6 +39,10 @@ namespace CTS.Kanban.Migrations
                     b.Property<int>("KanbanColumnId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("KanbanColumnTitle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("StatusType")
                         .IsRequired()
                         .HasColumnType("text");
@@ -46,7 +53,7 @@ namespace CTS.Kanban.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("KanbanColumnId");
+                    b.HasIndex("KanbanColumnId", "KanbanColumnTitle");
 
                     b.ToTable("KanbanCards");
                 });
@@ -54,16 +61,12 @@ namespace CTS.Kanban.Migrations
             modelBuilder.Entity("CTS.Kanban.KanbanColumn", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("StatusType")
-                        .IsRequired()
+                    b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "Title");
 
                     b.ToTable("KanbanColumns");
                 });
@@ -72,7 +75,7 @@ namespace CTS.Kanban.Migrations
                 {
                     b.HasOne("CTS.Kanban.KanbanColumn", "KanbanColumn")
                         .WithMany("KanbanCards")
-                        .HasForeignKey("KanbanColumnId")
+                        .HasForeignKey("KanbanColumnId", "KanbanColumnTitle")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

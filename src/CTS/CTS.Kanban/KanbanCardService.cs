@@ -49,7 +49,6 @@ public class KanbanService<T> : IKanbanObjectService<T> where T : class, IKanban
 
     public async Task<T> UpsertAsync(T kanban)
     {
-
         var kanbanToUpdate = await _dbSet.FindAsync(kanban.Id);
         if(kanbanToUpdate is null)
         {
@@ -61,7 +60,6 @@ public class KanbanService<T> : IKanbanObjectService<T> where T : class, IKanban
         await _appDbContext.SaveChangesAsync();
         return kanbanToUpdate;
     }
-
 }
 
 public static class ServiceLocator

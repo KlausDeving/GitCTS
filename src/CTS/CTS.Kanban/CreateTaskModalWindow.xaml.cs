@@ -7,7 +7,9 @@ namespace CTS.Kanban;
 /// </summary>
 public partial class CreateTaskModalWindow : Window
 {
-    public CreateTaskModalWindow(List<string> statuses, KanbanCard? kanbanCard = null)
+    private readonly KanbanColumn _kanbanColumn;
+
+    public CreateTaskModalWindow(KanbanColumn kanbanColumn, List<string> statuses, KanbanCard? kanbanCard = null)
     {
         InitializeComponent();
         TitleBox.Focus();
@@ -19,6 +21,7 @@ public partial class CreateTaskModalWindow : Window
             DescriptionBox.Text=kanbanCard.Description;
             StatusBox.SelectedItem=kanbanCard.StatusType;
         }
+        _kanbanColumn=kanbanColumn;
     }
     public KanbanCard? Result { get; set; }
 
@@ -29,10 +32,7 @@ public partial class CreateTaskModalWindow : Window
             Title=this.TitleBox.Text,
             Description=this.DescriptionBox.Text,
             StatusType=(StatusBox.SelectedItem??string.Empty)?.ToString(),
-            KanbanColumn=new KanbanColumn()
-            {
-                StatusType=(StatusBox.SelectedItem??string.Empty)?.ToString()
-            }
+            KanbanColumn=_kanbanColumn
         };
         this.DialogResult=true;
         Close();

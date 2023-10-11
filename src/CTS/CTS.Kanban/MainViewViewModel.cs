@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace CTS.Kanban;
 public partial class MainViewViewModel : ObservableObject
@@ -22,12 +19,10 @@ public partial class MainViewViewModel : ObservableObject
         KanbanBoardViewModel=new KanbanBoardViewModel();
         RetrieveKanban();
     }
-
-
     private async Task RetrieveKanban()
     {
-        var cards = await _kanbanCardService.GetAsync();
-        var columns = await _kanbanColumnService.GetAsync();
+        var cards = (await _kanbanCardService.GetAsync()).ToList();
+        var columns = (await _kanbanColumnService.GetAsync()).ToList();
         KanbanBoardViewModel.KanbanColumnViewModels=new ObservableCollection<KanbanColumnViewModel>(columns.Select(x => new KanbanColumnViewModel(x)));
     }
 }

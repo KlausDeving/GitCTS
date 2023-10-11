@@ -51,7 +51,7 @@ public partial class KanbanCardViewModel : ObservableObject
     [RelayCommand]
     private void Edit()
     {
-        CreateTaskModalWindow createTaskModalWindow = new CreateTaskModalWindow(_kanbanCardService.GetAsync().Result.Select(x => x.StatusType).ToList(), _kanbanCard);
+        CreateTaskModalWindow createTaskModalWindow = new CreateTaskModalWindow(_kanbanCardService.GetAsync(_kanbanCard.Id).Result.KanbanColumn, _kanbanCardService.GetAsync().Result.Select(x => x.StatusType).ToList(), _kanbanCard);
 
         if(createTaskModalWindow.ShowDialog()==true)
         {
